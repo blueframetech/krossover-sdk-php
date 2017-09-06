@@ -12,6 +12,8 @@ use Aws\Exception\MultipartUploadException;
  */
 class Uploader
 {
+    use Traits\Request;
+
     const UPLOAD_URI = '/intelligence-api/v3/upload';
     const AWS_REGION = 'us-east-1';
     const AWS_ACL = 'public-read';
@@ -28,16 +30,6 @@ class Uploader
      * @var string
      */
     private $krossoverUrl;
-
-    /**
-     * @var string
-     */
-    private $krossoverToken;
-
-    /**
-     * @var int
-     */
-    private $clientId;
 
     /**
      * @var string
@@ -65,8 +57,7 @@ class Uploader
     {
         $this->credentials = $credentials;
         $this->krossoverUrl = ($productionEnvironment) ? self::KO_PROD_URI : self::KO_PREPROD_URI;
-        $this->krossoverToken = $krossoverToken;
-        $this->clientId = $clientId;
+        $this->setHeaders($krossoverToken, $clientId);
     }
 
     /**
@@ -132,11 +123,8 @@ class Uploader
     {
         $client = new Client(['base_uri' => $this->krossoverUrl]);
 
-        $headers = [
-            'Authorization' => 'Bearer '.$this->krossoverToken,
-            'X-Client-Id' => $this->clientId,
-            'Content-Type' => 'application/x-www-form-urlencoded'
-        ];
+        $headers = $this->formUrlEncodedHeader;
+
         $body = [
             'partCount' => 1
         ];
@@ -177,11 +165,7 @@ class Uploader
 
         $uri = self::UPLOAD_URI."/file/{$this->guid}";
 
-        $headers = [
-            'Authorization' => 'Bearer '.$this->krossoverToken,
-            'X-Client-Id' => $this->clientId,
-            'Content-Type' => 'application/x-www-form-urlencoded'
-        ];
+        $headers = $this->formUrlEncodedHeader;
 
         echo $this->fileName;
         $body = [
