@@ -1,0 +1,21 @@
+{
+    "name": "krossover/krossover-sdk-php",
+    "description": "Krossover SDK for PHP - Integrate with Krossover in your PHP projects",
+    "type": "library",
+    "require": {
+        "aws/aws-sdk-php": "^3.36",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Krossover Intelligence",
+            "email": "tech@krossover.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Krossover\\": "src/"
+        }
+    }
+}
