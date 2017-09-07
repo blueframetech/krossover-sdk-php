@@ -90,8 +90,7 @@ class Uploader
         );
 
         try {
-            $result = $uploader->upload();
-            echo "Upload complete: {$result['ObjectURL']}\n";
+            $uploader->upload();
             //Signals KO to start the uploader workflow
             $this->signalCompletedFileUpload();
         } catch (MultipartUploadException $e) {
@@ -168,7 +167,6 @@ class Uploader
 
         $headers = $this->formUrlEncodedHeader;
 
-        echo $this->fileName;
         $body = [
             'identifier' => $this->fileName,
             'sequence' => 1
