@@ -48,23 +48,23 @@ class Uploader
 
     /**
      * Uploader constructor.
-     * @param $credentials
-     * @param $productionEnvironment
-     * @param $krossoverToken
-     * @param $clientId
+     * @param array $credentials - Array containing the credentials for Amazon AWS
+     * @param boolean $isProductionEnvironment - true if is a production environment/false if testing or developing
+     * @param string $krossoverToken - KO token obtained after authenticating
+     * @param int $clientId - KO client ID - provided by KO Tech team.
      */
-    public function __construct($credentials, $productionEnvironment, $krossoverToken, $clientId)
+    public function __construct($credentials, $isProductionEnvironment, $krossoverToken, $clientId)
     {
         $this->credentials = $credentials;
-        $this->krossoverUrl = ($productionEnvironment) ? self::KO_PROD_URI : self::KO_PREPROD_URI;
+        $this->krossoverUrl = ($isProductionEnvironment) ? self::KO_PROD_URI : self::KO_PREPROD_URI;
         $this->setHeaders($krossoverToken, $clientId);
     }
 
     /**
      * Uploads a file to KO s3 buckets and signals the API to start the upload workflow
      *
-     * @param $fileName
-     * @param $filePath
+     * @param string $fileName
+     * @param string $filePath
      * @return boolean
      * @throws \Exception
      */
@@ -116,6 +116,7 @@ class Uploader
 
     /**
      * Gets a unique GUID for the upload and information about the S3 Bucket
+     *
      * @return mixed
      * @throws \Exception
      */
@@ -183,6 +184,8 @@ class Uploader
     }
 
     /**
+     * Returns the GUID of the uploaded video.
+     *
      * @return string
      */
     public function getGuid()
