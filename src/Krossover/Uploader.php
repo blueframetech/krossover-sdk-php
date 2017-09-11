@@ -10,7 +10,7 @@ use Aws\Exception\MultipartUploadException;
  * Class Uploader
  * @package Krossover
  */
-class Uploader
+class Uploader implements Interfaces\Environment
 {
     use Traits\Request;
 
@@ -18,18 +18,11 @@ class Uploader
     const AWS_REGION = 'us-east-1';
     const AWS_ACL = 'public-read';
     const AWS_VERSION = 'latest';
-    const KO_PREPROD_URI = 'http://v2-pre-prod-app.krossover.com';
-    const KO_PROD_URI = 'https://app.krossover.com';
 
     /**
      * @var array
      */
     private $credentials;
-
-    /**
-     * @var string
-     */
-    private $krossoverUrl;
 
     /**
      * @var string
@@ -56,7 +49,7 @@ class Uploader
     public function __construct($credentials, $isProductionEnvironment, $krossoverToken, $clientId)
     {
         $this->credentials = $credentials;
-        $this->krossoverUrl = ($isProductionEnvironment) ? self::KO_PROD_URI : self::KO_PREPROD_URI;
+        $this->setKrossoverUri($isProductionEnvironment);
         $this->setHeaders($krossoverToken, $clientId);
     }
 
@@ -121,7 +114,7 @@ class Uploader
      */
     private function getRequiredKOUploadInformation()
     {
-        $client = new Client(['base_uri' => $this->krossoverUrl]);
+        $client = new Client(['base_uri' => $this->krossoverUri]);
 
         $headers = $this->formUrlEncodedHeader;
 
@@ -161,7 +154,7 @@ class Uploader
      */
     private function signalCompletedFileUpload()
     {
-        $client = new Client(['base_uri' => $this->krossoverUrl]);
+        $client = new Client(['base_uri' => $this->krossoverUri]);
 
         $uri = self::UPLOAD_URI."/file/{$this->guid}";
 
