@@ -153,7 +153,7 @@ class Game implements Interfaces\Environment
         try {
             $this->game->validate();
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
 
         $this->sendSaveGameRequest();
@@ -186,7 +186,7 @@ class Game implements Interfaces\Environment
         try {
             $this->game->validate();
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
         if (empty($this->gameVideo)) {
             throw new \Exception('Video must be uploaded and set before submitting the game for breakdown');
@@ -203,7 +203,7 @@ class Game implements Interfaces\Environment
         $remainingBreakdowns = $this->getRemainingBreakdowns();
 
         if (($remainingBreakdowns === 0) && (!$softFailWhenNoRemainingBreakdowns)) {
-            throw new \Exception('No remaining breakdowns for your account. Please contact ');
+            throw new \Exception('No remaining breakdowns for your account. Please contact support@krossover.com.');
         }
 
         //We get the saved game to get the video id
@@ -235,7 +235,7 @@ class Game implements Interfaces\Environment
                 $uri
             );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
 
         if ((!key_exists('packageGamesRemaining', $response)) || (!key_exists('planGamesRemaining', $response))) {
@@ -268,7 +268,7 @@ class Game implements Interfaces\Environment
                 implode ("?", [ $uri, $parameters ])
             );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
 
         return $response;
@@ -312,7 +312,7 @@ class Game implements Interfaces\Environment
         try {
             $response = $this->koJsonApiRequest('POST', self::GAME_URI, $data);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
 
         $this->game->id = $response['id'];
@@ -341,7 +341,7 @@ class Game implements Interfaces\Environment
         try {
             $this->koJsonApiRequest('POST', $uri, $data);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
     }
 
@@ -371,7 +371,7 @@ class Game implements Interfaces\Environment
                 implode ("?", [ $uri, $parameters ])
             );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
 
         return $response;
@@ -393,7 +393,7 @@ class Game implements Interfaces\Environment
         try {
             $this->koJsonApiRequest('POST', $uri, $data);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
     }
 
@@ -418,7 +418,7 @@ class Game implements Interfaces\Environment
         try {
             $this->jsonRequest('POST', $uri, $body);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage(), 0, $e);
         }
     }
 
