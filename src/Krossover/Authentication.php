@@ -32,6 +32,7 @@ class Authentication implements Interfaces\Environment
         $isProductionEnvironment,
         $xClientId
     ) {
+        $this->xClientId = $xClientId;
         $this->setKrossoverUri($isProductionEnvironment);
         $this->client = new Client(['base_uri' => $this->krossoverUri]);
     }
