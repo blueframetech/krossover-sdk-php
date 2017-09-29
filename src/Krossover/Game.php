@@ -52,6 +52,18 @@ class Game implements Interfaces\Environment
      * @var int
      */
     private $videoId;
+    /**
+     * @var
+     */
+    private $isProductionEnvironment;
+    /**
+     * @var
+     */
+    private $krossoverToken;
+    /**
+     * @var
+     */
+    private $clientId;
 
     /**
      * Game constructor.
@@ -94,6 +106,9 @@ class Game implements Interfaces\Environment
 
         $this->setKrossoverUri($isProductionEnvironment);
         $this->setHeaders($krossoverToken, $clientId);
+        $this->isProductionEnvironment = $isProductionEnvironment;
+        $this->krossoverToken = $krossoverToken;
+        $this->clientId = $clientId;
     }
 
     /**
@@ -436,5 +451,35 @@ class Game implements Interfaces\Environment
         }
 
         throw new \Exception('This game cannot be submited for breakdown.');
+    }
+
+    /**
+     * @param $sportsAssociation
+     * @param $conference
+     * @param $gender
+     * @param $sportId
+     * @throws \Exception
+     */
+    public function shareToFilmExchange(
+        $sportsAssociation,
+        $conference,
+        $gender,
+        $sportId
+    ) {
+        if (!empty($this->game->id) && (!empty($this->videoId))) {
+            $filmExchangeFilm = new FilmExchangeFilm($this->isProductionEnvironment, $this->krossoverToken, $this->clientId);
+            $filmExchangeFilm->shareToFilmExchange(
+                $sportsAssociation,
+                $conference,
+                $gender,
+                $sportId,
+                $this->game->id,
+                $this->videoId,
+                $this->game->createdByTeamId,
+                $this->game->createdByUserId
+            );
+        } else {
+            throw new \Exception('The game must be saved first.');
+        }
     }
 }
