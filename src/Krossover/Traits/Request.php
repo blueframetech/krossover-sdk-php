@@ -50,8 +50,19 @@ trait Request
         ];
     }
 
+    /**
+     * @param $isProductionEnvironment
+     */
     protected function setKrossoverUri($isProductionEnvironment) {
         $this->krossoverUri = ($isProductionEnvironment) ? self::KO_PROD_URI : self::KO_PREPROD_URI;
+    }
+
+    /**
+     * Overrides the KO uri with the VM uri
+     */
+    protected function setKrossoverVmUri()
+    {
+        $this->krossoverUri = self::KO_VM_URI;
     }
 
     /**
