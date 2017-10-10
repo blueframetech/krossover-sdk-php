@@ -454,6 +454,56 @@ class Game implements Interfaces\Environment
     }
 
     /**
+     *
+     */
+    public function shareWithTeamsPrimaryConferences()
+    {
+        $filmExchanges = $this->getPrimaryConferences();
+
+        foreach ($filmExchanges as $filmExchange) {
+            $this->shareToFilmExchange(
+                $filmExchange->sportsAssociation,
+                $filmExchange->conference,
+                $filmExchange->gender,
+                $filmExchange->sportId
+            );
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getPrimaryConferences()
+    {
+        $conferences = [];
+        
+        if (isset($this->game->teamHomeId)) {
+            $conferenceMemberships = new TeamConferenceMembership(
+                $this->isProductionEnvironment,
+                $this->krossoverToken,
+                $this->clientId,
+                $this->game->teamHomeId
+            );
+            if (!empty($conferenceMemberships->primaryConference) && ($conferenceMemberships->primaryConference->isFilmExchange)) {
+                $conferences[$conferenceMemberships->primaryConference->key] = $conferenceMemberships->primaryConference;
+            }
+        }
+
+        if (isset($this->game->teamAwayId)) {
+            $conferenceMemberships = new TeamConferenceMembership(
+                $this->isProductionEnvironment,
+                $this->krossoverToken,
+                $this->clientId,
+                $this->game->teamAwayId
+            );
+            if (!empty($conferenceMemberships->primaryConference) && ($conferenceMemberships->primaryConference->isFilmExchange)) {
+                $conferences[$conferenceMemberships->primaryConference->key] = $conferenceMemberships->primaryConference;
+            }
+        }
+        return $conferences;
+    }
+
+    /**
      * @param $sportsAssociation
      * @param $conference
      * @param $gender
