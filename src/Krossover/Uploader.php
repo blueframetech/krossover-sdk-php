@@ -5,7 +5,6 @@ use GuzzleHttp\Client;
 use Aws\S3\S3Client;
 use Aws\S3\MultipartUploader;
 use Aws\Exception\MultipartUploadException;
-use Aws\Multipart\UploadState;
 
 /**
  * Class Uploader
