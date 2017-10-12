@@ -5,6 +5,7 @@ use GuzzleHttp\Client;
 use Aws\S3\S3Client;
 use Aws\S3\MultipartUploader;
 use Aws\Exception\MultipartUploadException;
+use Aws\Multipart\UploadState;
 
 /**
  * Class Uploader
@@ -40,17 +41,29 @@ class Uploader implements Interfaces\Environment
     private $fileName;
 
     /**
+     * @var
+     */
+    private $tries = 0;
+
+    /**
+     * @var int
+     */
+    private $retries;
+
+    /**
      * Uploader constructor.
      * @param array $credentials - Array containing the credentials for Amazon AWS
      * @param boolean $isProductionEnvironment - true if is a production environment/false if testing or developing
      * @param string $krossoverToken - KO token obtained after authenticating
      * @param int $clientId - KO client ID - provided by KO Tech team.
+     * @param int $retries
      */
-    public function __construct($credentials, $isProductionEnvironment, $krossoverToken, $clientId)
+    public function __construct($credentials, $isProductionEnvironment, $krossoverToken, $clientId, $retries = 3)
     {
         $this->credentials = $credentials;
         $this->setKrossoverUri($isProductionEnvironment);
         $this->setHeaders($krossoverToken, $clientId);
+        $this->retries = $retries;
     }
 
     /**
@@ -82,12 +95,29 @@ class Uploader implements Interfaces\Environment
             ]
         );
 
-        try {
-            $uploader->upload();
+        $success = true;
+
+        while ($this->tries < $this->retries) {
+            $success = true;
+            $this->tries++;
+
+            try {
+                $uploader->upload();
+            } catch (MultipartUploadException $e) {
+                $success = false;
+            }
+
+            if ($success) {
+                break;
+            }
+        }
+
+        //If after retrying the status is still fail
+        if (!$success) {
+            throw new \Exception('There was an error uploading the file');
+        } else {
             //Signals KO to start the uploader workflow
             $this->signalCompletedFileUpload();
-        } catch (MultipartUploadException $e) {
-            throw new \Exception("There was an error uploading the specified file. (message: {$e->getMessage()})");
         }
 
         return true;
