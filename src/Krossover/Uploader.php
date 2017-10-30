@@ -1,6 +1,7 @@
 <?php
 namespace Krossover;
 
+use Aws\Multipart\UploadState;
 use GuzzleHttp\Client;
 use Aws\S3\S3Client;
 use Aws\S3\MultipartUploader;
@@ -13,6 +14,7 @@ use Aws\Exception\MultipartUploadException;
 class Uploader implements Interfaces\Environment
 {
     use Traits\Request;
+    use Traits\Logging;
 
     const UPLOAD_URI = '/intelligence-api/v3/upload';
     const AWS_REGION = 'us-east-1';
@@ -57,7 +59,7 @@ class Uploader implements Interfaces\Environment
      * @param int $clientId - KO client ID - provided by KO Tech team.
      * @param int $retries
      */
-    public function __construct($credentials, $isProductionEnvironment, $krossoverToken, $clientId, $retries = 3)
+    public function __construct($credentials, $isProductionEnvironment, $krossoverToken, $clientId, $retries = 5)
     {
         $this->credentials = $credentials;
         $this->setKrossoverUri($isProductionEnvironment);
@@ -104,6 +106,8 @@ class Uploader implements Interfaces\Environment
                 $uploader->upload();
             } catch (MultipartUploadException $e) {
                 $success = false;
+                $this->log("{$e->getCode()}: {$this->fileName} - {$e->getMessage()}");
+                $this->log("{$e->getTraceAsString()}");
             }
 
             if ($success) {
@@ -113,6 +117,7 @@ class Uploader implements Interfaces\Environment
 
         //If after retrying the status is still fail
         if (!$success) {
+            $this->log("Stopped trying to upload {$this->fileName}");
             throw new \Exception('There was an error uploading the file');
         } else {
             //Signals KO to start the uploader workflow

@@ -6,6 +6,7 @@ use Krossover\Models;
 class Game implements Interfaces\Environment
 {
     use Traits\Request;
+    use Traits\Logging;
 
     const GAME_TYPE = 'games';
     const GAME_TEAM_TYPE = 'game-teams';
@@ -327,6 +328,9 @@ class Game implements Interfaces\Environment
         try {
             $response = $this->koJsonApiRequest('POST', self::GAME_URI, $data);
         } catch (\Exception $e) {
+            $game = serialize($this);
+            $this->log("{$e->getMessage()}");
+            $this->log("{$game}");
             throw new \Exception($e->getMessage(), 0, $e);
         }
 
@@ -356,6 +360,9 @@ class Game implements Interfaces\Environment
         try {
             $this->koJsonApiRequest('POST', $uri, $data);
         } catch (\Exception $e) {
+            $game = serialize($this);
+            $this->log("{$e->getMessage()}");
+            $this->log("{$game}");
             throw new \Exception($e->getMessage(), 0, $e);
         }
     }
@@ -432,6 +439,8 @@ class Game implements Interfaces\Environment
 
         try {
             $this->jsonRequest('POST', $uri, $body);
+            $game = serialize($this);
+            $this->log("{$game}");
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage(), 0, $e);
         }
