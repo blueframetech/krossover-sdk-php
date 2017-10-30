@@ -415,6 +415,9 @@ class Game implements Interfaces\Environment
         try {
             $this->koJsonApiRequest('POST', $uri, $data);
         } catch (\Exception $e) {
+            $game = serialize($this);
+            $this->log("{$e->getMessage()}");
+            $this->log("{$game}");
             throw new \Exception($e->getMessage(), 0, $e);
         }
     }
@@ -439,9 +442,10 @@ class Game implements Interfaces\Environment
 
         try {
             $this->jsonRequest('POST', $uri, $body);
-            $game = serialize($this);
-            $this->log("{$game}");
         } catch (\Exception $e) {
+            $game = serialize($this);
+            $this->log("{$e->getMessage()}");
+            $this->log("{$game}");
             throw new \Exception($e->getMessage(), 0, $e);
         }
     }
