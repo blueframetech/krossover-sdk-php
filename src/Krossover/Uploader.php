@@ -87,6 +87,7 @@ class Uploader implements Interfaces\Environment
         $this->fileName = $this->guid."_1.{$extension}";
 
         //Stats a multipart upload
+        $dateTime = new \DateTime();
         $uploader = new MultipartUploader(
             $s3Client,
             "{$filePath}{$fileName}",
@@ -95,6 +96,7 @@ class Uploader implements Interfaces\Environment
                 'key'    => $this->fileName,
             ]
         );
+        $this->log("Uploading {$this->fileName}: {$dateTime->format(\DateTime::W3C)}");
 
         $success = true;
 
