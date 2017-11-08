@@ -186,6 +186,12 @@ class Game implements Interfaces\Environment
      */
     public function setVideo($guid)
     {
+        try {
+            $this->log("{$guid} attached to a game.");
+        } catch (\Exception $e) {
+
+        }
+
         $this->gameVideo = new Models\GameVideo();
         $this->gameVideo->guid = $guid;
 
@@ -199,6 +205,11 @@ class Game implements Interfaces\Environment
      */
     public function saveGame()
     {
+        try {
+            $this->log("{$this->gameVideo->guid} starting to save game between {$this->homeTeam->teamId} - {$this->awayTeam->teamId}.");
+        } catch (\Exception $e) {
+        }
+
         try {
             $this->game->validate();
         } catch (\Exception $e) {
