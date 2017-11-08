@@ -143,9 +143,9 @@ class Game implements Interfaces\Environment
         $this->awayTeam->teamId = $teamId;
         $this->awayTeam->legacySide = Models\GameTeam::LEGACY_SIDE_OPPOSING;
         $this->awayTeam->teamOrder = Models\GameTeam::TEAM_ORDER_AWAY;
-        $this->homeTeam->finalScore = $finalScore;
-        $this->homeTeam->primaryJerseyColor = $primaryJerseyColor;
-        $this->homeTeam->secondaryJerseyColor = $secondaryJerseyColor;
+        $this->awayTeam->finalScore = $finalScore;
+        $this->awayTeam->primaryJerseyColor = $primaryJerseyColor;
+        $this->awayTeam->secondaryJerseyColor = $secondaryJerseyColor;
     }
 
     /**
