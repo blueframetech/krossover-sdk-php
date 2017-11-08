@@ -149,6 +149,39 @@ class Game implements Interfaces\Environment
     }
 
     /**
+     * Creates an non-canonical, non-customer team as the opponent team
+     *
+     * @param $teamName
+     * @param $finalScore
+     * @param $primaryJerseyColor
+     * @param null $secondaryJerseyColor
+     * @throws \Exception
+     */
+    public function createOpponentTeam($teamName, $finalScore, $primaryJerseyColor, $secondaryJerseyColor = null)
+    {
+        if (empty($this->homeTeam) && empty($this->awayTeam)) {
+            throw new \Exception('You must define the opponent team before creating a new team');
+        }
+
+        $baseTeam = (!empty($this->homeTeam)) ? $this->homeTeam : $this->awayTeam;
+
+        $teamRepository = new Team(
+            $this->isProductionEnvironment,
+            $this->krossoverToken,
+            $this->clientId
+        );
+
+
+        $team = $teamRepository->createNonCustomerTeamFromTeam($teamName, $baseTeam->teamId);
+
+        if (!empty($this->homeTeam)) {
+            $this->setAwayTeam($team->id, $finalScore, $primaryJerseyColor, $secondaryJerseyColor);
+        } else {
+            $this->setHomeTeam($team->id, $finalScore, $primaryJerseyColor, $secondaryJerseyColor);
+        }
+    }
+
+    /**
      * @param $guid
      */
     public function setVideo($guid)
