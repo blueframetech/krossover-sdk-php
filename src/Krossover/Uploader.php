@@ -19,7 +19,7 @@ class Uploader implements Interfaces\Environment
     const UPLOAD_URI = '/intelligence-api/v3/upload';
     const AWS_REGION = 'us-east-1';
     const AWS_ACL = 'public-read';
-    const AWS_VERSION = 'latest';
+    const AWS_VERSION = '2006-03-01';
 
     /**
      * @var array
