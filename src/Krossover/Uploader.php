@@ -174,7 +174,7 @@ class Uploader implements Interfaces\Environment
     private function getS3Client()
     {
         $client = new S3Client([
-            $this->credentials,
+            'credentials' => $this->credentials,
             'region' => self::AWS_REGION,
             'version' => self::AWS_VERSION
         ]);
